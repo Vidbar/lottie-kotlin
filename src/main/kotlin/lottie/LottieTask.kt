@@ -6,6 +6,8 @@ public class LottieTask<T>(runnable: Callable<LottieResult<T>>, runNow: Boolean)
     public val EXECUTOR: Executor = Executors.newCachedThreadPool()
 
     private var result: LottieResult<T>? = null
+    private val successListeners: MutableSet<LottieListener<T>> = LinkedHashSet(1)
+    private val failureListeners: MutableSet<LottieListener<Throwable>> = LinkedHashSet(1)
 
     init {
         if (runNow) {
@@ -17,6 +19,16 @@ public class LottieTask<T>(runnable: Callable<LottieResult<T>>, runNow: Boolean)
         } else {
             //TODO EXECUTOR.execute(LottieFutureTask(runnable))
         }
+    }
+
+    public fun removeListener(listener: LottieListener<T>): LottieTask<T> {
+        successListeners.remove(listener)
+        return this
+    }
+
+    public fun removeFailureListener(listener: LottieListener<Throwable>): LottieTask<T> {
+        failureListeners.remove(listener)
+        return this
     }
 
     private fun setResult(result: LottieResult<T>) {
