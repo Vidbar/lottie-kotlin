@@ -3,7 +3,8 @@ package lottie
 import android.Context
 import lottie.model.LottieCompositionCache
 import lottie.parser.moshi.JsonReader
-import lottie.utils.closeQuietly
+import lottie.parser.moshi.of
+import lottie.utils.Utils.closeQuietly
 import org.jetbrains.skija.Bitmap
 import java.io.IOException
 import java.io.InputStream
@@ -56,7 +57,7 @@ public fun fromZipStreamSync(inputStream: ZipInputStream, cacheKey: String?): Lo
 
 private fun fromZipStreamSyncInternal(
     inputStream: ZipInputStream,
-    cacheKey: String?
+    cacheKey: String?,
 ): LottieResult<LottieComposition> {
     var composition: LottieComposition? = null
     val images: MutableMap<String, Bitmap> = HashMap<String, Bitmap>()
@@ -106,8 +107,8 @@ private fun fromZipStreamSyncInternal(
 }
 
 private fun fromJsonReaderSyncInternal(
-    reader: com.airbnb.lottie.parser.moshi.JsonReader, cacheKey: String?, close: Boolean
-): LottieResult<LottieComposition?>? {
+    reader: com.airbnb.lottie.parser.moshi.JsonReader, cacheKey: String?, close: Boolean,
+): LottieResult<LottieComposition> {
     return try {
         val composition: LottieComposition = LottieCompositionMoshiParser.parse(reader)
         if (cacheKey != null) {
@@ -123,15 +124,15 @@ private fun fromJsonReaderSyncInternal(
     }
 }
 
-public fun fromJsonInputStreamSync(stream: InputStream, cacheKey: String?): LottieResult<LottieComposition?>? {
+public fun fromJsonInputStreamSync(stream: InputStream, cacheKey: String?): LottieResult<LottieComposition> {
     return fromJsonInputStreamSync(stream, cacheKey, true)
 }
 
 private fun fromJsonInputStreamSync(
     stream: InputStream,
     cacheKey: String?,
-    close: Boolean
-): LottieResult<LottieComposition?>? {
+    close: Boolean,
+): LottieResult<LottieComposition> {
     return try {
         fromJsonReaderSync(of(buffer(source(stream))), cacheKey)
     } finally {
@@ -143,13 +144,13 @@ private fun fromJsonInputStreamSync(
 
 public fun fromJsonReaderSync(
     reader: JsonReader,
-    cacheKey: String?
-): LottieResult<LottieComposition?>? {
+    cacheKey: String?,
+): LottieResult<LottieComposition> {
     return fromJsonReaderSyncInternal(reader, cacheKey, true)
 }
 
 private fun cache(
-    cacheKey: String?, callable: Callable<LottieResult<LottieComposition>>
+    cacheKey: String?, callable: Callable<LottieResult<LottieComposition>>,
 ): LottieTask<LottieComposition> {
     val cachedComposition: LottieComposition? =
         if (cacheKey == null) null else LottieCompositionCache.instance[cacheKey]

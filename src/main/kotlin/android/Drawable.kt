@@ -14,4 +14,8 @@ public abstract class Drawable {
     public fun getCallback(): Callback {
         TODO("Not yet implemented")
     }
+
+    public fun setCallback(cb: Callback) {
+        TODO("Not yet implemented")
+    }
 }

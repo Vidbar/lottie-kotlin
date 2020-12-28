@@ -1,6 +1,8 @@
 package lottie
 
-import java.util.concurrent.*
+import java.util.concurrent.Callable
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 public class LottieTask<T>(runnable: Callable<LottieResult<T>>, runNow: Boolean) {
     public val EXECUTOR: Executor = Executors.newCachedThreadPool()
@@ -21,8 +23,20 @@ public class LottieTask<T>(runnable: Callable<LottieResult<T>>, runNow: Boolean)
         }
     }
 
+    public fun addListener(listener: LottieListener<T>): LottieTask<T> {
+        result?.getValue()?.let { listener.onResult(it) }
+        successListeners.add(listener)
+        return this
+    }
+
     public fun removeListener(listener: LottieListener<T>): LottieTask<T> {
         successListeners.remove(listener)
+        return this
+    }
+
+    public fun addFailureListener(listener: LottieListener<Throwable>): LottieTask<T> {
+        result?.getException()?.let { listener.onResult(it) }
+        failureListeners.add(listener)
         return this
     }
 
