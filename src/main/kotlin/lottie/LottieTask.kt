@@ -5,6 +5,8 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 public class LottieTask<T>(runnable: Callable<LottieResult<T>>, runNow: Boolean) {
+    public constructor(runnable: Callable<LottieResult<T>>) : this(runnable, false)
+
     public val EXECUTOR: Executor = Executors.newCachedThreadPool()
 
     private var result: LottieResult<T>? = null

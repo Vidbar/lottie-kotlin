@@ -18,4 +18,8 @@ public abstract class Drawable {
     public fun setCallback(cb: Callback) {
         TODO("Not yet implemented")
     }
+
+    public fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
+        TODO("Not yet implemented")
+    }
 }

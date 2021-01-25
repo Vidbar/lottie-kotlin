@@ -61,15 +61,15 @@ public class LottieAnimationView : AppCompatImageView() {
     private fun fromAssets(assetName: String): LottieTask<LottieComposition> {
         return if (isInEditMode()) {
             val callable = Callable<LottieResult<LottieComposition>> {
-                if (cacheComposition) fromAssetSync(getContext(), assetName)
-                else fromAssetSync(getContext(), assetName, null)
+                if (cacheComposition) LottieCompositionFactory.fromAssetSync(getContext(), assetName)
+                else LottieCompositionFactory.fromAssetSync(getContext(), assetName, null)
             }
             LottieTask(callable, true)
         } else {
-            if (cacheComposition) fromAsset(
+            if (cacheComposition) LottieCompositionFactory.fromAsset(
                 getContext(),
                 assetName
-            ) else fromAsset(getContext(), assetName, null)
+            ) else LottieCompositionFactory.fromAsset(getContext(), assetName, null)
         }
     }
 

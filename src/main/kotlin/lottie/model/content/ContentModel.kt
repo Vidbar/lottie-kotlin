@@ -5,5 +5,5 @@ import lottie.animation.content.Content
 import lottie.model.layer.BaseLayer
 
 public interface ContentModel {
-    public fun toContent(drawable: LottieDrawable, layer: BaseLayer): Content?
+    public fun toContent(drawable: LottieDrawable, layer: BaseLayer): Content
 }

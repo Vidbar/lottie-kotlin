@@ -1,7 +1,11 @@
 package lottie.parser.moshi
 
+import okio.Buffer
 import okio.BufferedSource
+import okio.ByteString
+import okio.Options
 import java.io.Closeable
+import java.io.IOException
 import java.util.*
 
 public abstract class JsonReader : Closeable {
@@ -24,6 +28,24 @@ public abstract class JsonReader : Closeable {
 
     public fun getPath(): String {
         return getPath(stackSize, scopes, pathNames, pathIndices)
+    }
+    public class Options private constructor(public val strings: Array<String?>, public val doubleQuoteSuffix: okio.Options) {
+        public companion object {
+            public fun of(vararg strings: String?): Options {
+                return try {
+                    val result = arrayOfNulls<ByteString>(strings.size)
+                    val buffer = Buffer()
+                    for (i in strings.indices) {
+                        JsonReader.string(buffer, strings[i])
+                        buffer.readByte() // Skip the leading double quote (but leave the trailing one).
+                        result[i] = buffer.readByteString()
+                    }
+                    Options(strings.clone(), of.of(*result))
+                } catch (e: IOException) {
+                    throw AssertionError(e)
+                }
+            }
+        }
     }
 }
 

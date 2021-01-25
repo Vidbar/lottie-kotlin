@@ -1,5 +1,6 @@
 package lottie.utils
 
+import android.Bitmap
 import java.io.Closeable
 import java.io.InterruptedIOException
 import java.lang.Exception
@@ -27,6 +28,15 @@ public object Utils {
                 e is InterruptedIOException || e is ProtocolException ||
                 e is SSLException || e is UnknownHostException ||
                 e is UnknownServiceException
+    }
+
+    public fun resizeBitmapIfNeeded(bitmap: Bitmap, width: Int, height: Int): Bitmap {
+        if (bitmap.width == width && bitmap.height == height) {
+            return bitmap
+        }
+        val resizedBitmap: Bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true)
+        bitmap.recycle()
+        return resizedBitmap
     }
 }
 

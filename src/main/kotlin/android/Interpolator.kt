@@ -1,5 +1,5 @@
 package android
 
-public interface Interpolator {
+public interface Interpolator : TimeInterpolator{
 
 }
